@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обучение языкам программирования - Hello World Polyglot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-outline {
+            border: 2px solid #667eea;
+            color: #667eea;
+            background: transparent;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .username {
+            color: #667eea;
+            font-weight: bold;
+        }
+        
+        .hero {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        .search-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .language-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .language-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+            color: white;
+        }
+        
+        .card-header h3 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .card-header .difficulty {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .card-body {
+            padding: 20px;
+        }
+        
+        .card-body p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-badge {
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            color: #667eea;
+        }
+        
+        .code-example {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .code-example pre {
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .code-example .code-title {
+            color: #4ec9b0;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+        
+        .syntax-section {
+            margin-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 15px;
+        }
+        
+        .syntax-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .syntax-table {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 8px;
+        }
+        
+        .syntax-table pre {
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            margin: 5px 0;
+        }
+        
+        .syntax-comment {
+            color: #6a9955;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            color: #999;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 24px;
+            }
+            
+            .languages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>🌍 Hello World Polyglot</h1>
+            </div>
+            <nav>
+                {% if user %}
+                    <div class="user-info">
+                        <span class="username">👤 {{ user }}</span>
+                        <a href="/" class="btn btn-outline">🏠 Главная</a>
+                        <a href="/languages" class="btn btn-outline">🚀 Запустить код</a>
+                        <a href="/logout" class="btn btn-outline">🚪 Выйти</a>
+                    </div>
+                {% else %}
+                    <a href="/login-page" class="btn btn-outline">🔐 Вход</a>
+                    <a href="/register-page" class="btn btn-primary">📝 Регистрация</a>
+                {% endif %}
+            </nav>
+        </header>
+        
+        <div class="hero">
+            <h2>📚 Изучай языки программирования</h2>
+            <p>Всё, что нужно знать о каждом языке: синтаксис, особенности и примеры кода</p>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск языка по названию или описанию..." onkeyup="filterLanguages()">
+        </div>
+        
+        <div class="languages-grid" id="languagesGrid">
+            {% for key, lang in languages.items() %}
+            <div class="language-card" data-name="{{ lang.name|lower }}" data-desc="{{ lang.description|lower }}">
+                <div class="card-header">
+                    <h3>{{ lang.name }}</h3>
+                    <span class="difficulty">
+                        {% if key == 'python' or key == 'javascript' or key == 'ruby' %}⭐ Лёгкий
+                        {% elif key == 'go' or key == 'php' or key == 'csharp' %}⭐⭐ Средний
+                        {% elif key == 'cpp' or key == 'rust' or key == 'java' %}⭐⭐⭐ Сложный
+                        {% else %}⭐⭐ Средний
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <p>{{ lang.description }}</p>
+                    <div class="features-list">
+                        {% for feature in lang.features %}
+                        <span class="feature-badge">✨ {{ feature }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="syntax-section">
+                        <div class="syntax-title">📦 Переменные:</div>
+                        <div class="syntax-table">
+                            {% if key == 'python' %}
+                            <pre>name = "John"           <span class="syntax-comment"># строка</span></pre>
+                            <pre>age = 25                <span class="syntax-comment"># целое число</span></pre>
+                            <pre>price = 19.99           <span class="syntax-comment"># число с плавающей точкой</span></pre>
+                            <pre>is_valid = True         <span class="syntax-comment"># булево значение (True/False)</span></pre>
+                            {% elif key == 'javascript' %}
+                            <pre>let name = "John";      <span class="syntax-comment">// строка</span></pre>
+                            <pre>const age = 25;         <span class="syntax-comment">// константа</span></pre>
+                            <pre>var price = 19.99;      <span class="syntax-comment">// число</span></pre>
+                            <pre>let isValid = true;     <span class="syntax-comment">// булево значение</span></pre>
+                            {% elif key == 'cpp' %}
+                            <pre>#include &lt;string&gt;</pre>
+                            <pre>std::string name = "John";</pre>
+                            <pre>int age = 25;</pre>
+                            <pre>double price = 19.99;</pre>
+                            <pre>bool isValid = true;</pre>
+                            {% elif key == 'java' %}
+                            <pre>String name = "John";</pre>
+                            <pre>int age = 25;</pre>
+                            <pre>double price = 19.99;</pre>
+                            <pre>boolean isValid = true;</pre>
+                            {% elif key == 'go' %}
+                            <pre>var name string = "John"</pre>
+                            <pre>age := 25</pre>
+                            <pre>price := 19.99</pre>
+                            <pre>isValid := true</pre>
+                            {% elif key == 'rust' %}
+                            <pre>let name = "John";</pre>
+                            <pre>let age: i32 = 25;</pre>
+                            <pre>let price = 19.99;</pre>
+                            <pre>let is_valid = true;</pre>
+                            {% elif key == 'csharp' %}
+                            <pre>string name = "John";</pre>
+                            <pre>int age = 25;</pre>
+                            <pre>double price = 19.99;</pre>
+                            <pre>bool isValid = true;</pre>
+                            {% elif key == 'ruby' %}
+                            <pre>name = "John"</pre>
+                            <pre>age = 25</pre>
+                            <pre>price = 19.99</pre>
+                            <pre>is_valid = true</pre>
+                            {% elif key == 'php' %}
+                            <pre>$name = "John";</pre>
+                            <pre>$age = 25;</pre>
+                            <pre>$price = 19.99;</pre>
+                            <pre>$isValid = true;</pre>
+                            {% elif key == 'swift' %}
+                            <pre>var name = "John"</pre>
+                            <pre>let age = 25</pre>
+                            <pre>var price = 19.99</pre>
+                            <pre>var isValid = true</pre>
+                            {% elif key == 'kotlin' %}
+                            <pre>var name = "John"</pre>
+                            <pre>val age = 25</pre>
+                            <pre>var price = 19.99</pre>
+                            <pre>var isValid = true</pre>
+                            {% elif key == 'typescript' %}
+                            <pre>let name: string = "John";</pre>
+                            <pre>const age: number = 25;</pre>
+                            <pre>let price: number = 19.99;</pre>
+                            <pre>let isValid: boolean = true;</pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="syntax-section">
+                        <div class="syntax-title">🔀 Условия (if/else):</div>
+                        <div class="syntax-table">
+                            {% if key == 'python' %}
+                            <pre>if age >= 18:</pre>
+                            <pre>    print("Взрослый")</pre>
+                            <pre>elif age >= 13:</pre>
+                            <pre>    print("Подросток")</pre>
+                            <pre>else:</pre>
+                            <pre>    print("Ребёнок")</pre>
+                            {% elif key == 'javascript' or key == 'typescript' %}
+                            <pre>if (age >= 18) {</pre>
+                            <pre>    console.log("Взрослый");</pre>
+                            <pre>} else if (age >= 13) {</pre>
+                            <pre>    console.log("Подросток");</pre>
+                            <pre>} else {</pre>
+                            <pre>    console.log("Ребёнок");</pre>
+                            <pre>}</pre>
+                            {% elif key == 'cpp' or key == 'java' or key == 'csharp' or key == 'go' %}
+                            <pre>if (age >= 18) {</pre>
+                            <pre>    std::cout &lt;&lt; "Взрослый";</pre>
+                            <pre>} else if (age >= 13) {</pre>
+                            <pre>    std::cout &lt;&lt; "Подросток";</pre>
+                            <pre>} else {</pre>
+                            <pre>    std::cout &lt;&lt; "Ребёнок";</pre>
+                            <pre>}</pre>
+                            {% elif key == 'rust' %}
+                            <pre>if age >= 18 {</pre>
+                            <pre>    println!("Взрослый");</pre>
+                            <pre>} else if age >= 13 {</pre>
+                            <pre>    println!("Подросток");</pre>
+                            <pre>} else {</pre>
+                            <pre>    println!("Ребёнок");</pre>
+                            <pre>}</pre>
+                            {% elif key == 'ruby' %}
+                            <pre>if age >= 18</pre>
+                            <pre>    puts "Взрослый"</pre>
+                            <pre>elsif age >= 13</pre>
+                            <pre>    puts "Подросток"</pre>
+                            <pre>else</pre>
+                            <pre>    puts "Ребёнок"</pre>
+                            <pre>end</pre>
+                            {% elif key == 'php' %}
+                            <pre>if ($age >= 18) {</pre>
+                            <pre>    echo "Взрослый";</pre>
+                            <pre>} elseif ($age >= 13) {</pre>
+                            <pre>    echo "Подросток";</pre>
+                            <pre>} else {</pre>
+                            <pre>    echo "Ребёнок";</pre>
+                            <pre>}</pre>
+                            {% elif key == 'swift' or key == 'kotlin' %}
+                            <pre>if age >= 18 {</pre>
+                            <pre>    print("Взрослый")</pre>
+                            <pre>} else if age >= 13 {</pre>
+                            <pre>    print("Подросток")</pre>
+                            <pre>} else {</pre>
+                            <pre>    print("Ребёнок")</pre>
+                            <pre>}</pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="syntax-section">
+                        <div class="syntax-title">🔄 Циклы (for/while):</div>
+                        <div class="syntax-table">
+                            {% if key == 'python' %}
+                            <pre><span class="syntax-comment"># for цикл</span></pre>
+                            <pre>for i in range(5):</pre>
+                            <pre>    print(i)</pre>
+                            <pre><span class="syntax-comment"># while цикл</span></pre>
+                            <pre>i = 0</pre>
+                            <pre>while i < 5:</pre>
+                            <pre>    print(i)</pre>
+                            <pre>    i += 1</pre>
+                            {% elif key == 'javascript' or key == 'typescript' %}
+                            <pre><span class="syntax-comment">// for цикл</span></pre>
+                            <pre>for (let i = 0; i < 5; i++) {</pre>
+                            <pre>    console.log(i);</pre>
+                            <pre>}</pre>
+                            <pre><span class="syntax-comment">// while цикл</span></pre>
+                            <pre>let i = 0;</pre>
+                            <pre>while (i < 5) {</pre>
+                            <pre>    console.log(i);</pre>
+                            <pre>    i++;</pre>
+                            <pre>}</pre>
+                            {% elif key == 'cpp' or key == 'java' or key == 'csharp' or key == 'go' %}
+                            <pre><span class="syntax-comment">// for цикл</span></pre>
+                            <pre>for (int i = 0; i < 5; i++) {</pre>
+                            <pre>    std::cout &lt;&lt; i;</pre>
+                            <pre>}</pre>
+                            <pre><span class="syntax-comment">// while цикл</span></pre>
+                            <pre>int i = 0;</pre>
+                            <pre>while (i < 5) {</pre>
+                            <pre>    std::cout &lt;&lt; i;</pre>
+                            <pre>    i++;</pre>
+                            <pre>}</pre>
+                            {% elif key == 'rust' %}
+                            <pre><span class="syntax-comment">// for цикл</span></pre>
+                            <pre>for i in 0..5 {</pre>
+                            <pre>    println!("{}", i);</pre>
+                            <pre>}</pre>
+                            <pre><span class="syntax-comment">// while цикл</span></pre>
+                            <pre>let mut i = 0;</pre>
+                            <pre>while i < 5 {</pre>
+                            <pre>    println!("{}", i);</pre>
+                            <pre>    i += 1;</pre>
+                            <pre>}</pre>
+                            {% elif key == 'ruby' %}
+                            <pre><span class="syntax-comment"># for цикл</span></pre>
+                            <pre>for i in 0..5</pre>
+                            <pre>    puts i</pre>
+                            <pre>end</pre>
+                            <pre><span class="syntax-comment"># while цикл</span></pre>
+                            <pre>i = 0</pre>
+                            <pre>while i < 5</pre>
+                            <pre>    puts i</pre>
+                            <pre>    i += 1</pre>
+                            <pre>end</pre>
+                            {% elif key == 'php' %}
+                            <pre><span class="syntax-comment">// for цикл</span></pre>
+                            <pre>for ($i = 0; $i < 5; $i++) {</pre>
+                            <pre>    echo $i;</pre>
+                            <pre>}</pre>
+                            <pre><span class="syntax-comment">// while цикл</span></pre>
+                            <pre>$i = 0;</pre>
+                            <pre>while ($i < 5) {</pre>
+                            <pre>    echo $i;</pre>
+                            <pre>    $i++;</pre>
+                            <pre>}</pre>
+                            {% elif key == 'swift' or key == 'kotlin' %}
+                            <pre><span class="syntax-comment">// for цикл</span></pre>
+                            <pre>for i in 0..<5 {</pre>
+                            <pre>    print(i)</pre>
+                            <pre>}</pre>
+                            <pre><span class="syntax-comment">// while цикл</span></pre>
+                            <pre>var i = 0</pre>
+                            <pre>while i < 5 {</pre>
+                            <pre>    print(i)</pre>
+                            <pre>    i += 1</pre>
+                            <pre>}</pre>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="code-example">
+                        <div class="code-title">📝 Hello World:</div>
+                        <pre>{{ lang.example }}</pre>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="no-results" id="noResults" style="display: none;">
+            😕 Ничего не найдено. Попробуй другой запрос.
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 Hello World Polyglot | Учи языки программирования весело! 🎉</p>
+        </div>
+    </div>
+    
+    <script>
+        function filterLanguages() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.language-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const desc = card.getAttribute('data-desc');
+                
+                if (name.includes(searchTerm) || desc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            const noResults = document.getElementById('noResults');
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
