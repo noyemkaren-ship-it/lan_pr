@@ -9,32 +9,32 @@ from api.rourers.user_router import user_routers
 from common.utils import *
 from token_opertion import *
 
-app = FastAPI(title="Hello World Polyglot", description="Запускай Hello World на разных языках программирования", docs_url="/docs/123")
+app = FastAPI(title="Hello World Polyglot", description="Запускай Hello World на разных языках программирования", docs_url="/docs/2012/secret/1")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 app.include_router(user_routers)
 
 
-@app.get("/", response_class=HTMLResponse, tags=["page"])
+@app.get("/", response_class=HTMLResponse, tags=["page📝"])
 async def home(request: Request):
     user = get_current_user(request)
     return templates.TemplateResponse("index.html", {"request": request, "user": user})
 
-@app.get("/login-page", response_class=HTMLResponse)
+@app.get("/login-page", response_class=HTMLResponse, tags=["page📝"])
 async def login_page(request: Request):
     user = get_current_user(request)
     if user:
         return RedirectResponse(url="/", status_code=303)
     return templates.TemplateResponse("login.html", {"request": request})
 
-@app.get("/register-page", response_class=HTMLResponse, tags=["page"])
+@app.get("/register-page", response_class=HTMLResponse, tags=["page📝"])
 async def register_page(request: Request):
     user = get_current_user(request)
     if user:
         return RedirectResponse(url="/", status_code=303)
     return templates.TemplateResponse("register.html", {"request": request})
 
-@app.get("/languages", response_class=HTMLResponse, tags=["page"])
+@app.get("/languages", response_class=HTMLResponse, tags=["page📝"])
 async def languages_page(request: Request):
     user = get_current_user(request)
     return templates.TemplateResponse("languages.html", {
@@ -43,7 +43,7 @@ async def languages_page(request: Request):
         "languages": LANGUAGES_INFO
     })
 
-@app.post("/run-code", tags=["page"])
+@app.post("/run-code", tags=["page📝"])
 async def run_code(request: Request):
     data = await request.json()
     language = data.get("language")
@@ -114,13 +114,13 @@ async def run_code(request: Request):
                 "success": True
             }
 
-@app.get("/logout", tags=["page"])
+@app.get("/logout", tags=["page📝"])
 async def logout(request: Request, response: Response):
     response.delete_cookie("token", path="/")
     return RedirectResponse(url="/login-page", status_code=303)
 
 
-@app.get("/learn", response_class=HTMLResponse, tags=["page"])
+@app.get("/learn", response_class=HTMLResponse, tags=["page📝"])
 async def learn_page(request: Request):
     from common.utils import LANGUAGES_INFO
     user = get_current_user(request)

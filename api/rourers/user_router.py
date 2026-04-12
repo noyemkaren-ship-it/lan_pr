@@ -25,7 +25,7 @@ async def login(request: Request, response: Response, user: UserGetSchemasByName
         return {"ok": True}
     raise HTTPException(status_code=404, detail="user not found")
 
-@user_routers.get("/user/{user_id}", tags=["Get user By ID", "user"])
+@user_routers.get("/user/{user_id}", tags=["Get user👤", "user"])
 @limiter.limit("30/minute")
 async def get_user(request: Request, user_id: int):
     token = request.cookies.get("token")
@@ -49,7 +49,7 @@ async def get_user(request: Request, user_id: int):
     except pyjwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Плохой токен")
     
-@user_routers.get("/user/name/{user_name}", tags=["Get user By NAME", "user"])
+@user_routers.get("/user/name/{user_name}", tags=["Get user👤", "user"])
 @limiter.limit("30/minute")
 async def get_user_name(request: Request, user_name: str):
     token = request.cookies.get("token")
