@@ -5,6 +5,7 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 from schemas.users_shemas.user_get import *
 from schemas.users_shemas.user_base import UserSchema
+from token_opertion import SECRET_KEY
 
 limiter = Limiter(key_func=get_remote_address)
 user_routers = APIRouter(prefix="/api")
@@ -14,7 +15,7 @@ user_routers = APIRouter(prefix="/api")
 async def login(request: Request, response: Response, user: UserGetSchemasByNameAndPassword):
     
     if authenticate(user.name, user.password):
-        token = pyjwt.encode({"user": user.name}, "secret", algorithm="HS256")
+        token = pyjwt.encode({"user": user.name}, SECRET_KEY, algorithm="HS256")
         
         response.set_cookie(
             key="token",
@@ -34,7 +35,7 @@ async def get_user(request: Request, user_id: int):
         raise HTTPException(status_code=401, detail="Нет токена")
     
     try:
-        payload = pyjwt.decode(token, "secret", algorithms=["HS256"])
+        payload = pyjwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_from_token = payload.get("user")
         
         if user_from_token != "admin":
@@ -58,7 +59,7 @@ async def get_user_name(request: Request, user_name: str):
         raise HTTPException(status_code=401, detail="Нет токена")
     
     try:
-        payload = pyjwt.decode(token, "secret", algorithms=["HS256"])
+        payload = pyjwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_from_token = payload.get("user")
         
         if user_from_token != "admin":
@@ -80,7 +81,7 @@ async def register_api(request: Request, user: UserSchema, response: Response):
     
     if result:
         if authenticate(user.name, user.password):
-            token = pyjwt.encode({"user": user.name}, "secret", algorithm="HS256")
+            token = pyjwt.encode({"user": user.name}, SECRET_KEY, algorithm="HS256")
             
             response.set_cookie(
                 key="token",

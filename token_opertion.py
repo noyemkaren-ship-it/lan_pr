@@ -1,6 +1,7 @@
 import jwt
 from fastapi import Request
-SECRET_KEY = "secret"
+import secrets
+SECRET_KEY = secrets.token_urlsafe(32)
 
 def get_current_user(request: Request):
     token = request.cookies.get("token")
