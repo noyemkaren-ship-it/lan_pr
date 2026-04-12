@@ -8,8 +8,12 @@ import httpx
 from api.rourers.user_router import user_routers
 from common.utils import *
 from token_opertion import *
+import secrets
 
-app = FastAPI(title="Hello World Polyglot", description="Запускай Hello World на разных языках программирования", docs_url="/docs/2012/secret/1")
+secret_path = secrets.token_urlsafe(32) 
+url_new = "/" + secret_path
+print(f"🔗 Новая ссылка на документацию: {url_new}")
+app = FastAPI(title="Hello World Polyglot", description="Запускай Hello World на разных языках программирования", docs_url=url_new)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 app.include_router(user_routers)
