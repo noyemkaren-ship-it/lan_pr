@@ -9,7 +9,7 @@ from schemas.users_shemas.user_base import UserSchema
 limiter = Limiter(key_func=get_remote_address)
 user_routers = APIRouter(prefix="/api")
 
-@user_routers.post("/login")
+@user_routers.post("/login", tags=["🔐 Auth", "user"])
 @limiter.limit("5/minute")
 async def login(request: Request, response: Response, user: UserGetSchemasByNameAndPassword):
     
@@ -25,7 +25,7 @@ async def login(request: Request, response: Response, user: UserGetSchemasByName
         return {"ok": True}
     raise HTTPException(status_code=404, detail="user not found")
 
-@user_routers.get("/user/{user_id}")
+@user_routers.get("/user/{user_id}", tags=["Get user By ID", "user"])
 @limiter.limit("30/minute")
 async def get_user(request: Request, user_id: int):
     token = request.cookies.get("token")
@@ -48,8 +48,32 @@ async def get_user(request: Request, user_id: int):
         
     except pyjwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Плохой токен")
+    
+@user_routers.get("/user/name/{user_name}", tags=["Get user By NAME", "user"])
+@limiter.limit("30/minute")
+async def get_user_name(request: Request, user_name: str):
+    token = request.cookies.get("token")
+    
+    if not token:
+        raise HTTPException(status_code=401, detail="Нет токена")
+    
+    try:
+        payload = pyjwt.decode(token, "secret", algorithms=["HS256"])
+        user_from_token = payload.get("user")
+        
+        if user_from_token != "admin":
+            raise HTTPException(status_code=403, detail="Ты не админ, иди отсюда!")
+        
+        user_data = get_user_by_name(user_name)
+        if not user_data:
+            raise HTTPException(status_code=404, detail="user not found")
+        
+        return user_data
+        
+    except pyjwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Плохой токен")
 
-@user_routers.post("/register")
+@user_routers.post("/register", tags=["🔐 Auth", "user"])
 @limiter.limit("5/minute")
 async def register_api(request: Request, user: UserSchema, response: Response):
     result = register_user(name=user.name, email=user.email, password=user.password)
