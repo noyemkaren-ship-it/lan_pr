@@ -3,12 +3,13 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi import Response
-import jwt
 import httpx
 from api.rourers.user_router import user_routers
 from common.utils import *
 from token_opertion import *
 import secrets
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 secret_path = secrets.token_urlsafe(32) 
 url_new = "/" + secret_path
@@ -17,21 +18,26 @@ app = FastAPI(title="Hello World Polyglot", description="Запускай Hello 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 app.include_router(user_routers)
+limiter = Limiter(key_func=get_remote_address)
 
 
 @app.get("/", response_class=HTMLResponse, tags=["page📝"])
+@limiter.limit("10/minute")
 async def home(request: Request):
     user = get_current_user(request)
     return templates.TemplateResponse("index.html", {"request": request, "user": user})
 
 @app.get("/login-page", response_class=HTMLResponse, tags=["page📝"])
+@limiter.limit("10/minute")
 async def login_page(request: Request):
     user = get_current_user(request)
     if user:
         return RedirectResponse(url="/", status_code=303)
     return templates.TemplateResponse("login.html", {"request": request})
 
+
 @app.get("/register-page", response_class=HTMLResponse, tags=["page📝"])
+@limiter.limit("10/minute")
 async def register_page(request: Request):
     user = get_current_user(request)
     if user:
@@ -39,6 +45,7 @@ async def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 @app.get("/languages", response_class=HTMLResponse, tags=["page📝"])
+@limiter.limit("30/minute")
 async def languages_page(request: Request):
     user = get_current_user(request)
     return templates.TemplateResponse("languages.html", {
@@ -48,6 +55,7 @@ async def languages_page(request: Request):
     })
 
 @app.post("/run-code", tags=["page📝"])
+@limiter.limit("50/minute")
 async def run_code(request: Request):
     data = await request.json()
     language = data.get("language")
@@ -111,7 +119,6 @@ async def run_code(request: Request):
             }
                 
         except Exception as e:
-            # Всё сломалось - показываем демо-вывод
             return {
                 "output": f"Hello from {language}!\n(Демо-режим: {str(e)[:50]}...)",
                 "error": "",
@@ -119,12 +126,14 @@ async def run_code(request: Request):
             }
 
 @app.get("/logout", tags=["page📝"])
+@limiter.limit("10/minute")
 async def logout(request: Request, response: Response):
     response.delete_cookie("token", path="/")
     return RedirectResponse(url="/login-page", status_code=303)
 
 
 @app.get("/learn", response_class=HTMLResponse, tags=["page📝"])
+@limiter.limit("10/minute")
 async def learn_page(request: Request):
     from common.utils import LANGUAGES_INFO
     user = get_current_user(request)
@@ -132,4 +141,4 @@ async def learn_page(request: Request):
         "request": request,
         "user": user,
         "languages": LANGUAGES_INFO
-    })
+    })   

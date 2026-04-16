@@ -6,6 +6,7 @@ from slowapi.util import get_remote_address
 from schemas.users_shemas.user_get import *
 from schemas.users_shemas.user_base import UserSchema
 from token_opertion import SECRET_KEY
+import requests as req
 
 limiter = Limiter(key_func=get_remote_address)
 user_routers = APIRouter(prefix="/api")
@@ -45,10 +46,7 @@ async def get_user(request: Request, user_id: int):
     try:
         payload = pyjwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_from_token = payload.get("user")
-        
-        # Проверка прав (можно сделать более гибкой)
         if user_from_token != "admin":
-            # Получаем пользователя по ID из токена для проверки прав
             current_user = get_user_by_name(user_from_token)
             if not current_user or current_user.id != user_id:
                 raise HTTPException(status_code=403, detail="У вас нет прав для просмотра этого пользователя")
@@ -96,7 +94,7 @@ async def get_user_name(request: Request, user_name: str):
         raise HTTPException(status_code=500, detail=f"Внутренняя ошибка сервера: {str(e)}")
 
 @user_routers.post("/register", tags=["🔐 Auth", "user"])
-@limiter.limit("5/minute")
+@limiter.limit("3/minute")
 async def register_api(request: Request, user: UserSchema, response: Response):
     register_result = register_user(name=user.name, email=user.email, password=user.password)
     
@@ -115,10 +113,8 @@ async def register_api(request: Request, user: UserSchema, response: Response):
             )
             return {"ok": True, "message": "Регистрация успешна", "user_id": register_result["user"].id}
         else:
-            # Регистрация прошла, но авто-логин не удался (маловероятно)
             return {"ok": True, "message": "Регистрация успешна, но войдите самостоятельно"}
     
-    # Возвращаем ошибку регистрации
     error_msg = register_result.get("error", "Ошибка регистрации")
     raise HTTPException(status_code=400, detail=error_msg)
 
@@ -139,7 +135,6 @@ async def delete_user_endpoint(request: Request, user_id: int):
         payload = pyjwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         user_from_token = payload.get("user")
         
-        # Только админ может удалять пользователей
         if user_from_token != "admin":
             raise HTTPException(status_code=403, detail="Только администратор может удалять пользователей")
         
@@ -152,3 +147,37 @@ async def delete_user_endpoint(request: Request, user_id: int):
         
     except pyjwt.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Недействительный токен")
+    
+    
+@user_routers.get("/curl", tags=["Admin panel📝"])
+@limiter.limit("10/minute")
+async def get_curl(request: Request, get_url_for_curl: str = ""):
+    if get_url_for_curl == "":
+        return {"error": "url is empty"}
+    
+    token = request.cookies.get("token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Нет токена")
+    
+    try:
+        payload = pyjwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+    except pyjwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Недействительный токен")
+    
+    user_from_token = payload.get("user")
+    if user_from_token != "admin":   
+        raise HTTPException(status_code=403, detail="Только администратор может использовать этот эндпоинт")
+    
+    try:
+        result = req.get(get_url_for_curl, timeout=10)
+        return {
+            "status_code": result.status_code,
+            "headers": dict(result.headers),
+            "content": result.text
+        }
+    except req.exceptions.Timeout:
+        return {"error": "Request timeout after 10 seconds"}
+    except req.exceptions.ConnectionError:
+        return {"error": "Failed to connect to URL"}
+    except Exception as e:
+        return {"error": str(e)}
